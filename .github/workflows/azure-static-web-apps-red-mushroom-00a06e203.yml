@@ -32,8 +32,7 @@ jobs:
           action: upload
           app_location: "/"
           api_location: ""
-          output_location: ""     # keep empty for Next.js SSR/hybrid
-          skip_app_build: true    # we already built above
+          skip_app_build: true
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'

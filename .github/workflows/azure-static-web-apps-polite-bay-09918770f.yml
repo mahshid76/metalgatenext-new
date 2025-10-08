@@ -16,7 +16,9 @@ jobs:
     name: Build and Deploy Job
     steps:
       - uses: actions/checkout@v3
-
+        with:
+          submodules: true
+          lfs: false
       - name: Build And Deploy
         id: builddeploy
         uses: Azure/static-web-apps-deploy@v1
@@ -25,17 +27,19 @@ jobs:
           repo_token: ${{ secrets.GITHUB_TOKEN }}
           action: "upload"
 
-          ###### Repository/Build Configurations ######
-          app_location: "/"          # پروژه‌ات در ریشه است
-          output_location: ".next"   # خروجی بیلد Next.js
-          skip_api_build: true       # جلوی ساخت Azure Function گرفته می‌شه
+          ###### Build Configurations ######
+          app_location: "/" 
+          output_location: ".next" 
+          skip_api_build: true # 🚀 این خط خیلی مهمه
           ###### End ######
 
   close_pull_request_job:
     if: github.event_name == 'pull_request' && github.event.action == 'closed'
     runs-on: ubuntu-latest
+    name: Close Pull Request Job
     steps:
       - name: Close Pull Request
+        id: closepullrequest
         uses: Azure/static-web-apps-deploy@v1
         with:
           azure_static_web_apps_api_token: ${{ secrets.AZURE_STATIC_WEB_APPS_API_TOKEN_POLITE_BAY_09918770F }}

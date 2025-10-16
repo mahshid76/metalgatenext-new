@@ -31,11 +31,18 @@ const projects = [
 
 export default function Gallery() {
   const [selectedIndex, setSelectedIndex] = useState(null);
+  const [prevIndex, setPrevIndex] = useState(null);
+  const [direction, setDirection] = useState(0); // 1 = next, -1 = prev
 
   const handleNext = () => {
+    setDirection(1);
+    setPrevIndex(selectedIndex);
     setSelectedIndex((prev) => (prev + 1) % projects.length);
   };
+
   const handlePrev = () => {
+    setDirection(-1);
+    setPrevIndex(selectedIndex);
     setSelectedIndex((prev) =>
       prev === 0 ? projects.length - 1 : prev - 1
     );
@@ -74,21 +81,35 @@ export default function Gallery() {
       {/* Modal / Lightbox */}
       {selectedIndex !== null && (
         <div
-          className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50"
+          className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50 overflow-hidden"
           onClick={() => setSelectedIndex(null)}
         >
-          {/* Main image */}
           <div
-            className="relative w-11/12 sm:w-3/4 lg:w-1/2 h-[60vh] sm:h-[70vh] transition-transform duration-300"
+            className="relative w-11/12 sm:w-3/4 lg:w-1/2 h-[60vh] sm:h-[70vh] overflow-hidden"
             onClick={(e) => e.stopPropagation()}
           >
+            {/* Slide + Fade */}
+            {prevIndex !== null && prevIndex !== selectedIndex && (
+              <Image
+                key={prevIndex}
+                src={projects[prevIndex].src}
+                alt={projects[prevIndex].title}
+                fill
+                className={`object-contain rounded-lg absolute top-0 left-0 transition-transform duration-500 ease-in-out ${
+                  direction === 1 ? "translate-x-[-100%]" : "translate-x-[100%]"
+                }`}
+              />
+            )}
+
             <Image
+              key={selectedIndex}
               src={projects[selectedIndex].src}
               alt={projects[selectedIndex].title}
               fill
-              className="object-contain rounded-lg transition-transform duration-300 scale-100 hover:scale-105"
+              className="object-contain rounded-lg transition-transform duration-500 ease-in-out"
             />
-            {/* Overlay text */}
+
+            {/* Overlay */}
             <div className="absolute bottom-4 left-4 text-white">
               <h3 className="text-xl font-semibold">
                 {projects[selectedIndex].title}
@@ -129,7 +150,12 @@ export default function Gallery() {
                     ? "border-white"
                     : "border-transparent"
                 } transition-transform duration-200 hover:scale-105`}
-                onClick={() => setSelectedIndex(index)}
+                onClick={(e) => {
+                  e.stopPropagation(); // جلوگیری از بستن modal
+                  setDirection(index > selectedIndex ? 1 : -1);
+                  setPrevIndex(selectedIndex);
+                  setSelectedIndex(index);
+                }}
               >
                 <Image
                   src={project.src}

@@ -25,7 +25,6 @@ const projects = [
   { src: "/images/21.jpg" },
   { src: "/images/22.jpg" },
   { src: "/images/23.jpg" },
-  { src: "/images/24.jpg" },
   { src: "/images/25.jpg" },
   { src: "/images/26.jpg" },
 ];

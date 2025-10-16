@@ -1,6 +1,8 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
+import { motion, AnimatePresence } from "framer-motion";
+import { useDrag } from "@use-gesture/react";
 
 const projects = [
   { src: "/images/1.jpg" },
@@ -31,56 +33,107 @@ const projects = [
 ];
 
 export default function Gallery() {
-  const [selectedImage, setSelectedImage] = useState(null);
+  const [selectedIndex, setSelectedIndex] = useState(null);
+
+  const handleNext = () => {
+    setSelectedIndex((prev) => (prev + 1) % projects.length);
+  };
+  const handlePrev = () => {
+    setSelectedIndex((prev) =>
+      prev === 0 ? projects.length - 1 : prev - 1
+    );
+  };
+
+  // Swipe gestures
+  const bind = useDrag(
+    ({ down, movement: [mx], velocity, direction: [xDir] }) => {
+      if (!down && Math.abs(mx) > 50) {
+        if (xDir < 0) handleNext();
+        if (xDir > 0) handlePrev();
+      }
+    }
+  );
 
   return (
-    <section className="my-10 md:my-16 px-4 lg:px-16">
-      {/* Title */}
-      <h2 className="text-3xl md:text-4xl font-bold text-center mb-12">
-        Our Projects
-      </h2>
+    <section className="my-10 px-4 lg:px-16">
+      <h2 className="text-3xl font-bold text-center mb-12">Our Projects</h2>
 
-      {/* Gallery Grid */}
-      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4 md:gap-6">
+      <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {projects.map((project, index) => (
-          <div
+          <motion.div
             key={index}
-            onClick={() => setSelectedImage(project)}
-            className="relative w-full h-56 md:h-64 lg:h-72 overflow-hidden rounded-xl shadow-xl group cursor-pointer"
+            className={`relative w-full h-56 rounded-xl overflow-hidden cursor-pointer`}
+            whileHover={{ scale: 1.05 }}
+            onClick={() => setSelectedIndex(index)}
+            animate={{
+              opacity:
+                selectedIndex !== null && selectedIndex !== index ? 0.3 : 1,
+              scale:
+                selectedIndex !== null && selectedIndex !== index ? 0.9 : 1,
+            }}
+            transition={{ duration: 0.3 }}
           >
             <Image
               src={project.src}
               alt={project.title}
               fill
-              className="object-cover transition-transform duration-500 group-hover:scale-110"
+              className="object-cover"
             />
-            {/* Overlay */}
-            <div className="absolute inset-0 bg-black bg-opacity-30 opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex flex-col justify-center items-center text-center text-white p-2">
-              <h3 className="text-lg md:text-xl font-semibold">
-                {project.title}
-              </h3>
-              <p className="text-sm md:text-base">{project.category}</p>
-            </div>
-          </div>
+          </motion.div>
         ))}
       </div>
 
-      {/* Modal for enlarged image */}
-      {selectedImage && (
-        <div
-          onClick={() => setSelectedImage(null)}
-          className="fixed inset-0 bg-black bg-opacity-80 flex justify-center items-center z-50 cursor-zoom-out animate-fadeIn"
-        >
-          <div className="relative w-[95%] sm:w-5/6 md:w-2/3 lg:w-1/2 h-[70vh] sm:h-[80vh] animate-zoomIn">
-            <Image
-              src={selectedImage.src}
-              alt={selectedImage.title}
-              fill
-              className="object-contain rounded-xl"
-            />
-          </div>
-        </div>
-      )}
+      {/* Modal / Lightbox */}
+      <AnimatePresence>
+        {selectedIndex !== null && (
+          <motion.div
+            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
+            onClick={() => setSelectedIndex(null)}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+          >
+            <motion.div
+              className="relative w-11/12 sm:w-3/4 lg:w-1/2 h-[80vh]"
+              onClick={(e) => e.stopPropagation()}
+              initial={{ scale: 0.8 }}
+              animate={{ scale: 1 }}
+              exit={{ scale: 0.8 }}
+              transition={{ type: "spring", stiffness: 300, damping: 30 }}
+              {...bind()}
+            >
+              <Image
+                src={projects[selectedIndex].src}
+                alt={projects[selectedIndex].title}
+                fill
+                className="object-contain rounded-lg"
+              />
+
+              {/* دکمه Close */}
+              <button
+                onClick={() => setSelectedIndex(null)}
+                className="absolute top-2 right-2 text-white text-3xl font-bold"
+              >
+                ×
+              </button>
+
+              {/* دکمه‌های بعدی و قبلی */}
+              <button
+                onClick={handlePrev}
+                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold"
+              >
+                ‹
+              </button>
+              <button
+                onClick={handleNext}
+                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold"
+              >
+                ›
+              </button>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
     </section>
   );
 }

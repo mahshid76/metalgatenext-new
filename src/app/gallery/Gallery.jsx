@@ -1,8 +1,6 @@
 "use client";
 import { useState } from "react";
 import Image from "next/image";
-import { motion, AnimatePresence } from "framer-motion";
-import { useDrag } from "@use-gesture/react";
 
 const projects = [
   { src: "/images/1.jpg" },
@@ -44,34 +42,21 @@ export default function Gallery() {
     );
   };
 
-  // Swipe gestures
-  const bind = useDrag(
-    ({ down, movement: [mx], velocity, direction: [xDir] }) => {
-      if (!down && Math.abs(mx) > 50) {
-        if (xDir < 0) handleNext();
-        if (xDir > 0) handlePrev();
-      }
-    }
-  );
-
   return (
     <section className="my-10 px-4 lg:px-16">
       <h2 className="text-3xl font-bold text-center mb-12">Our Projects</h2>
 
+      {/* Grid of small images */}
       <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 gap-4">
         {projects.map((project, index) => (
-          <motion.div
+          <div
             key={index}
-            className={`relative w-full h-56 rounded-xl overflow-hidden cursor-pointer`}
-            whileHover={{ scale: 1.05 }}
+            className={`relative w-full h-56 rounded-xl overflow-hidden cursor-pointer transition-transform duration-300 ${
+              selectedIndex !== null && selectedIndex !== index
+                ? "opacity-30 scale-90"
+                : "hover:scale-105"
+            }`}
             onClick={() => setSelectedIndex(index)}
-            animate={{
-              opacity:
-                selectedIndex !== null && selectedIndex !== index ? 0.3 : 1,
-              scale:
-                selectedIndex !== null && selectedIndex !== index ? 0.9 : 1,
-            }}
-            transition={{ duration: 0.3 }}
           >
             <Image
               src={project.src}
@@ -79,61 +64,85 @@ export default function Gallery() {
               fill
               className="object-cover"
             />
-          </motion.div>
+            <div className="absolute bottom-2 left-2 text-white">
+              <h3 className="font-semibold">{project.title}</h3>
+              <p className="text-sm">{project.category}</p>
+            </div>
+          </div>
         ))}
       </div>
 
       {/* Modal / Lightbox */}
-      <AnimatePresence>
-        {selectedIndex !== null && (
-          <motion.div
-            className="fixed inset-0 bg-black bg-opacity-80 flex items-center justify-center z-50"
-            onClick={() => setSelectedIndex(null)}
-            initial={{ opacity: 0 }}
-            animate={{ opacity: 1 }}
-            exit={{ opacity: 0 }}
+      {selectedIndex !== null && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-80 flex flex-col items-center justify-center z-50"
+          onClick={() => setSelectedIndex(null)}
+        >
+          {/* Main image */}
+          <div
+            className="relative w-11/12 sm:w-3/4 lg:w-1/2 h-[60vh] sm:h-[70vh] transition-transform duration-300"
+            onClick={(e) => e.stopPropagation()}
           >
-            <motion.div
-              className="relative w-11/12 sm:w-3/4 lg:w-1/2 h-[80vh]"
-              onClick={(e) => e.stopPropagation()}
-              initial={{ scale: 0.8 }}
-              animate={{ scale: 1 }}
-              exit={{ scale: 0.8 }}
-              transition={{ type: "spring", stiffness: 300, damping: 30 }}
-              {...bind()}
+            <Image
+              src={projects[selectedIndex].src}
+              alt={projects[selectedIndex].title}
+              fill
+              className="object-contain rounded-lg transition-transform duration-300 scale-100 hover:scale-105"
+            />
+            {/* Overlay text */}
+            <div className="absolute bottom-4 left-4 text-white">
+              <h3 className="text-xl font-semibold">
+                {projects[selectedIndex].title}
+              </h3>
+              <p className="text-md">{projects[selectedIndex].category}</p>
+            </div>
+
+            {/* Close button */}
+            <button
+              onClick={() => setSelectedIndex(null)}
+              className="absolute top-2 right-2 text-white text-3xl font-bold"
             >
-              <Image
-                src={projects[selectedIndex].src}
-                alt={projects[selectedIndex].title}
-                fill
-                className="object-contain rounded-lg"
-              />
+              ×
+            </button>
 
-              {/* دکمه Close */}
-              <button
-                onClick={() => setSelectedIndex(null)}
-                className="absolute top-2 right-2 text-white text-3xl font-bold"
-              >
-                ×
-              </button>
+            {/* Prev/Next buttons */}
+            <button
+              onClick={handlePrev}
+              className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold"
+            >
+              ‹
+            </button>
+            <button
+              onClick={handleNext}
+              className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold"
+            >
+              ›
+            </button>
+          </div>
 
-              {/* دکمه‌های بعدی و قبلی */}
-              <button
-                onClick={handlePrev}
-                className="absolute left-2 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold"
+          {/* Thumbnails below */}
+          <div className="flex gap-2 mt-6 overflow-x-auto px-2">
+            {projects.map((project, index) => (
+              <div
+                key={index}
+                className={`relative w-20 h-20 rounded-lg overflow-hidden cursor-pointer border-2 ${
+                  index === selectedIndex
+                    ? "border-white"
+                    : "border-transparent"
+                } transition-transform duration-200 hover:scale-105`}
+                onClick={() => setSelectedIndex(index)}
               >
-                ‹
-              </button>
-              <button
-                onClick={handleNext}
-                className="absolute right-2 top-1/2 transform -translate-y-1/2 text-white text-4xl font-bold"
-              >
-                ›
-              </button>
-            </motion.div>
-          </motion.div>
-        )}
-      </AnimatePresence>
+                <Image
+                  src={project.src}
+                  alt={project.title}
+                  fill
+                  className="object-cover"
+                />
+              </div>
+            ))}
+          </div>
+        </div>
+      )}
     </section>
   );
 }

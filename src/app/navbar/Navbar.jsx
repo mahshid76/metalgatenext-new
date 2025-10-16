@@ -43,7 +43,7 @@ export default function Navbar() {
                   className="h-12 sm:h-14 w-auto"
                 />
               </div>
-              {/* Logo2 (only desktop) */}
+              {/* Logo2  */}
               <div className="flex-shrink-0 hidden md:flex">
                 <img
                   src="/assets/logo2.svg"

@@ -1,14 +1,17 @@
-import Image from "next/image";
+import RetryImage from "./RetryImage";
 import ButtonLink from "./ButtonLink";
+import { blur } from "../data/blur";
 
 export default function ParallaxBand() {
   return (
     <section className="on-dark relative h-[620px] overflow-clip bg-[#0b0c0e]">
-      <Image
-        src="/images/21.jpg"
+      <RetryImage
+        src="/images/hero/21.jpg"
         alt="Welder working on a steel beam"
-        width={1440}
-        height={1440}
+        width={1200}
+        height={1200}
+        placeholder="blur"
+        blurDataURL={blur[21]}
         className="px absolute left-0 -top-[14%] h-[128%] w-full object-cover"
       />
       <div className="absolute inset-0 bg-[#0a0b0c]/65" />

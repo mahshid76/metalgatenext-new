@@ -22,46 +22,20 @@ const details = [
 ];
 
 export default function ContactSection({ id, showMap = false, heading = "Get a free quote" }) {
-  // idle | sending | sent | opened (email app) | error
-  const [status, setStatus] = useState("idle");
-  const hasEndpoint = Boolean(site.formEndpoint);
+  const [opened, setOpened] = useState(false);
 
-  const handleSubmit = async (e) => {
+  // The site is a static export with no backend, so the enquiry is sent through WhatsApp:
+  // the visitor's message is pre-filled and they just press send.
+  const handleSubmit = (e) => {
     e.preventDefault();
-    const form = e.currentTarget;
-    const data = new FormData(form);
-    if (data.get("_gotcha")) return; // honeypot: bots fill hidden fields
+    const data = new FormData(e.currentTarget);
     const name = String(data.get("name") || "").trim();
-    const contact = String(data.get("contact") || "").trim();
     const message = String(data.get("message") || "").trim();
-
-    if (!hasEndpoint) {
-      // No form service configured: open the visitor's email app with the message pre-filled.
-      const subject = encodeURIComponent(`Website enquiry from ${name}`);
-      const body = encodeURIComponent(`Name: ${name}\nContact: ${contact}\n\n${message}`);
-      window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
-      setStatus("opened");
-      return;
-    }
-
-    data.set("_subject", `Website enquiry from ${name}`);
-    if (contact.includes("@")) data.set("email", contact);
-    setStatus("sending");
-    try {
-      const res = await fetch(site.formEndpoint, {
-        method: "POST",
-        headers: { Accept: "application/json" },
-        body: data,
-      });
-      if (res.ok) {
-        form.reset();
-        setStatus("sent");
-      } else {
-        setStatus("error");
-      }
-    } catch {
-      setStatus("error");
-    }
+    const text = `Hi Metalgate Leeds, my name is ${name}.\n\n${message}`;
+    const url = `https://wa.me/${site.whatsappNumber}?text=${encodeURIComponent(text)}`;
+    const win = window.open(url, "_blank", "noopener,noreferrer");
+    if (!win) window.location.href = url; // popup blocked: open in this tab
+    setOpened(true);
   };
 
   return (
@@ -115,12 +89,6 @@ export default function ContactSection({ id, showMap = false, heading = "Get a f
               <input id={`${id || "form"}-name`} name="name" type="text" required autoComplete="name" className={fieldClass} />
             </div>
             <div className="flex flex-col gap-2">
-              <label htmlFor={`${id || "form"}-contact`} className="text-[15px] font-semibold">
-                Email or phone
-              </label>
-              <input id={`${id || "form"}-contact`} name="contact" type="text" required autoComplete="email" className={fieldClass} />
-            </div>
-            <div className="flex flex-col gap-2">
               <label htmlFor={`${id || "form"}-message`} className="text-[15px] font-semibold">
                 What do you need?
               </label>
@@ -132,47 +100,27 @@ export default function ContactSection({ id, showMap = false, heading = "Get a f
                 className={`${fieldClass} py-3.5`}
               />
             </div>
-            <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
             <button
               type="submit"
-              disabled={status === "sending"}
-              className="min-h-[54px] cursor-pointer rounded-sm bg-gold text-[17px] font-semibold text-[#18211f] transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
+              className="min-h-[54px] cursor-pointer rounded-sm bg-gold text-[17px] font-semibold text-[#18211f] transition hover:brightness-110"
             >
-              {status === "sending" ? "Sending…" : "Send enquiry"}
+              Send on WhatsApp
             </button>
             <p className="text-sm leading-relaxed text-dim" role="status">
-              {status === "sent" && "Thanks, your message has been sent. We'll be in touch soon."}
-              {status === "error" && (
+              {opened ? (
                 <>
-                  Sorry, something went wrong. Please call{" "}
+                  WhatsApp should now be open with your message ready to send. If nothing happened, message us on{" "}
+                  <a className="text-kick underline" href={site.whatsappQuote} target="_blank" rel="noopener noreferrer">
+                    WhatsApp
+                  </a>{" "}
+                  or call{" "}
                   <a className="text-kick underline" href={site.phoneHref}>
                     {site.phone}
-                  </a>{" "}
-                  or email{" "}
-                  <a className="text-kick underline" href={`mailto:${site.email}`}>
-                    {site.email}
                   </a>
                   .
                 </>
-              )}
-              {status === "opened" && (
-                <>
-                  Your email app should now be open with your message ready to send. If nothing happened, email us
-                  at{" "}
-                  <a className="text-kick underline" href={`mailto:${site.email}`}>
-                    {site.email}
-                  </a>
-                  .
-                </>
-              )}
-              {(status === "idle" || status === "sending") && (
-                <>
-                  {hasEndpoint ? "Prefer a quicker reply? " : "This opens your email app with your message ready to send. For a quicker reply, "}
-                  <a className="text-kick underline" href={site.whatsappQuote} target="_blank" rel="noopener noreferrer">
-                    message us on WhatsApp
-                  </a>
-                  .
-                </>
+              ) : (
+                "This opens WhatsApp with your message ready to send to us."
               )}
             </p>
           </form>

@@ -1,4 +1,4 @@
-import Image from "next/image";
+import RetryImage from "./RetryImage";
 import ButtonLink from "./ButtonLink";
 import { site } from "../data/site";
 import { blur } from "../data/blur";
@@ -21,7 +21,7 @@ export default function Hero() {
         <div className="hero-photo relative min-h-[380px] min-w-0 flex-[1.15_1_520px] overflow-clip bg-[#0d1512] md:min-h-[680px]">
           {slides.map((slide, i) => (
             <div key={slide.src} className="slide" style={{ animationDelay: `${i * 6}s` }}>
-              <Image
+              <RetryImage
                 src={slide.src}
                 alt={slide.alt}
                 fill
@@ -65,7 +65,7 @@ export default function Hero() {
 
       <div className="gate gate-l" />
       <div className="gate gate-r" />
-      <Image className="seal" src="/assets/logo2.svg" alt="" width={112} height={112} />
+      <RetryImage className="seal" src="/assets/logo2.svg" alt="" width={112} height={112} />
     </section>
   );
 }

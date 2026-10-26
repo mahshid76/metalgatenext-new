@@ -1,4 +1,4 @@
-import Image from "next/image";
+import RetryImage from "./RetryImage";
 import ButtonLink from "./ButtonLink";
 
 export default function AboutSection({ id }) {
@@ -7,7 +7,7 @@ export default function AboutSection({ id }) {
       <div className="mx-auto flex max-w-[1320px] flex-wrap items-center gap-x-[88px] gap-y-16 px-6 py-32 sm:px-8">
         <div className="flex min-w-0 flex-[1_1_420px] items-start gap-4">
           <div className="relative aspect-[3/4] flex-1 overflow-clip bg-photo">
-            <Image
+            <RetryImage
               src="/images/19.jpg"
               alt="Welder cutting steel sections on a job site"
               width={1350}
@@ -16,7 +16,7 @@ export default function AboutSection({ id }) {
             />
           </div>
           <div className="relative mt-16 aspect-[3/4] flex-1 overflow-clip bg-photo">
-            <Image
+            <RetryImage
               src="/images/28.jpg"
               alt="Steel canopy frame under construction"
               width={1350}

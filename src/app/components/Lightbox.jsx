@@ -2,7 +2,7 @@
 
 import { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
-import Image from "next/image";
+import RetryImage from "./RetryImage";
 
 const buttonClass =
   "absolute z-[3] inline-flex h-[52px] w-[52px] items-center justify-center rounded-full border border-white/35 bg-[#0f1715]/80 text-white transition hover:bg-gold hover:text-[#18211f]";
@@ -89,7 +89,7 @@ export default function Lightbox({ photos, index, onClose, onChange }) {
         className="absolute inset-0 z-[1] cursor-zoom-out"
       />
       <figure className="relative z-[2] flex max-w-[92vw] flex-col items-center gap-4">
-        <Image
+        <RetryImage
           key={photo.id}
           src={photo.src}
           alt={photo.alt}

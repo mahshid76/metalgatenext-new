@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useRef, useState } from "react";
-import Image from "next/image";
+import RetryImage from "./RetryImage";
 import SectionHeading from "./SectionHeading";
 import { services } from "../data/site";
 
@@ -67,7 +67,7 @@ export default function Services() {
           <div className="flex min-w-0 flex-[1_1_440px] flex-col gap-5">
             <div className="relative aspect-[5/4] overflow-clip bg-photo">
               {services.map((service, i) => (
-                <Image
+                <RetryImage
                   key={service.img}
                   src={service.img}
                   alt={service.alt}

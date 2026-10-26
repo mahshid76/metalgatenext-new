@@ -1,7 +1,7 @@
 "use client";
 
 import { useState } from "react";
-import Image from "next/image";
+import RetryImage from "./RetryImage";
 import Lightbox from "./Lightbox";
 import SectionHeading from "./SectionHeading";
 import { projects, rowA, rowB } from "../data/projects";
@@ -27,7 +27,7 @@ function Strip({ photos, scrollClass, loopClass, onOpen, offset = 0 }) {
                   className="photo block flex-none cursor-zoom-in overflow-clip bg-photo"
                   style={{ width: Math.round((ROW_HEIGHT * photo.w) / photo.h), height: ROW_HEIGHT }}
                 >
-                  <Image
+                  <RetryImage
                     src={photo.thumb}
                     alt={duplicate ? "" : photo.alt}
                     width={photo.tw}

@@ -10,6 +10,9 @@ export const site = {
     "https://wa.me/447710063815?text=Hi%20I%27m%20interested%20in%20your%20metal%20gates",
   facebook: "https://www.facebook.com/metalgateleeds",
   instagram: "https://www.instagram.com/metal_gate_leeds",
+  // Contact form endpoint, e.g. "https://formspree.io/f/xxxxxxxx" (public, not a secret).
+  // While empty, the form opens the visitor's email app instead.
+  formEndpoint: "",
 };
 
 export const nav = [

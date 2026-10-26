@@ -22,20 +22,46 @@ const details = [
 ];
 
 export default function ContactSection({ id, showMap = false, heading = "Get a free quote" }) {
-  const [opened, setOpened] = useState(false);
+  // idle | sending | sent | opened (email app) | error
+  const [status, setStatus] = useState("idle");
+  const hasEndpoint = Boolean(site.formEndpoint);
 
-  // The site is a static export with no backend, so the enquiry opens the visitor's
-  // email app with the message pre-filled instead of pretending it was sent.
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault();
-    const data = new FormData(e.currentTarget);
+    const form = e.currentTarget;
+    const data = new FormData(form);
+    if (data.get("_gotcha")) return; // honeypot: bots fill hidden fields
     const name = String(data.get("name") || "").trim();
     const contact = String(data.get("contact") || "").trim();
     const message = String(data.get("message") || "").trim();
-    const subject = encodeURIComponent(`Website enquiry from ${name}`);
-    const body = encodeURIComponent(`Name: ${name}\nContact: ${contact}\n\n${message}`);
-    window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
-    setOpened(true);
+
+    if (!hasEndpoint) {
+      // No form service configured: open the visitor's email app with the message pre-filled.
+      const subject = encodeURIComponent(`Website enquiry from ${name}`);
+      const body = encodeURIComponent(`Name: ${name}\nContact: ${contact}\n\n${message}`);
+      window.location.href = `mailto:${site.email}?subject=${subject}&body=${body}`;
+      setStatus("opened");
+      return;
+    }
+
+    data.set("_subject", `Website enquiry from ${name}`);
+    if (contact.includes("@")) data.set("email", contact);
+    setStatus("sending");
+    try {
+      const res = await fetch(site.formEndpoint, {
+        method: "POST",
+        headers: { Accept: "application/json" },
+        body: data,
+      });
+      if (res.ok) {
+        form.reset();
+        setStatus("sent");
+      } else {
+        setStatus("error");
+      }
+    } catch {
+      setStatus("error");
+    }
   };
 
   return (
@@ -106,26 +132,48 @@ export default function ContactSection({ id, showMap = false, heading = "Get a f
                 className={`${fieldClass} py-3.5`}
               />
             </div>
+            <input type="text" name="_gotcha" tabIndex={-1} autoComplete="off" aria-hidden="true" className="hidden" />
             <button
               type="submit"
-              className="min-h-[54px] cursor-pointer rounded-sm bg-gold text-[17px] font-semibold text-[#18211f] transition hover:brightness-110"
+              disabled={status === "sending"}
+              className="min-h-[54px] cursor-pointer rounded-sm bg-gold text-[17px] font-semibold text-[#18211f] transition hover:brightness-110 disabled:cursor-wait disabled:opacity-70"
             >
-              Send enquiry
+              {status === "sending" ? "Sending…" : "Send enquiry"}
             </button>
             <p className="text-sm leading-relaxed text-dim" role="status">
-              {opened
-                ? "Your email app should now be open with your message ready to send. If nothing happened, email us at "
-                : "This opens your email app with your message ready to send. For a quicker reply, "}
-              {opened ? (
-                <a className="text-kick underline" href={`mailto:${site.email}`}>
-                  {site.email}
-                </a>
-              ) : (
-                <a className="text-kick underline" href={site.whatsappQuote} target="_blank" rel="noopener noreferrer">
-                  message us on WhatsApp
-                </a>
+              {status === "sent" && "Thanks, your message has been sent. We'll be in touch soon."}
+              {status === "error" && (
+                <>
+                  Sorry, something went wrong. Please call{" "}
+                  <a className="text-kick underline" href={site.phoneHref}>
+                    {site.phone}
+                  </a>{" "}
+                  or email{" "}
+                  <a className="text-kick underline" href={`mailto:${site.email}`}>
+                    {site.email}
+                  </a>
+                  .
+                </>
               )}
-              .
+              {status === "opened" && (
+                <>
+                  Your email app should now be open with your message ready to send. If nothing happened, email us
+                  at{" "}
+                  <a className="text-kick underline" href={`mailto:${site.email}`}>
+                    {site.email}
+                  </a>
+                  .
+                </>
+              )}
+              {(status === "idle" || status === "sending") && (
+                <>
+                  {hasEndpoint ? "Prefer a quicker reply? " : "This opens your email app with your message ready to send. For a quicker reply, "}
+                  <a className="text-kick underline" href={site.whatsappQuote} target="_blank" rel="noopener noreferrer">
+                    message us on WhatsApp
+                  </a>
+                  .
+                </>
+              )}
             </p>
           </form>
         </div>

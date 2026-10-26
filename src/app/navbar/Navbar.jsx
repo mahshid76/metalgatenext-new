@@ -22,16 +22,16 @@ export default function Navbar() {
 
   return (
     <header className="on-light sticky top-0 z-50 border-b border-line bg-surface">
-      <div className="mx-auto flex max-w-[1320px] items-center justify-between gap-6 px-6 py-3 sm:px-8">
+      <div className="mx-auto flex max-w-[1920px] items-center justify-between gap-6 px-5 py-3 sm:px-8 lg:px-14 lg:py-4">
         <Link href="/" className="flex items-center gap-3.5" aria-label="Metalgate Leeds home">
-          <Image src="/assets/logo2.svg" alt="" width={52} height={52} priority />
-          <span className="text-lg font-extrabold tracking-[0.14em] text-ink sm:text-[22px]">
+          <Image src="/assets/logo2.svg" alt="" width={80} height={80} priority className="h-12 w-12 sm:h-16 sm:w-16 lg:h-20 lg:w-20" />
+          <span className="text-lg font-extrabold tracking-[0.14em] text-ink sm:text-2xl lg:text-[32px]">
             METAL <span className="text-gold">GATE</span>{" "}
-            <span className="text-xs font-semibold tracking-[0.22em] text-dim">LEEDS</span>
+            <span className="text-xs font-semibold tracking-[0.22em] text-dim lg:text-base">LEEDS</span>
           </span>
         </Link>
 
-        <nav aria-label="Main" className="hidden gap-9 text-[15px] font-medium md:flex">
+        <nav aria-label="Main" className="hidden gap-8 text-[17px] font-medium lg:flex xl:gap-12 xl:text-[19px]">
           {nav.map((item) => {
             const active = isActive(pathname, item.href);
             return (
@@ -54,13 +54,13 @@ export default function Navbar() {
         <div className="flex items-center gap-3">
           <Link
             href="/contact"
-            className="hidden min-h-12 items-center rounded-sm bg-gold px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#18211f] transition hover:brightness-110 sm:inline-flex"
+            className="hidden min-h-12 items-center rounded-sm bg-gold px-6 text-[13px] font-extrabold uppercase tracking-[0.08em] text-[#18211f] transition hover:brightness-110 sm:inline-flex lg:min-h-14 lg:px-8 lg:text-[15px]"
           >
             Get a free quote ↗
           </Link>
           <button
             type="button"
-            className="inline-flex h-12 w-12 items-center justify-center rounded-sm border border-line3 text-ink md:hidden"
+            className="inline-flex h-12 w-12 items-center justify-center rounded-sm border border-line3 text-ink lg:hidden"
             aria-label={open ? "Close menu" : "Open menu"}
             aria-expanded={open}
             aria-controls="mobile-menu"
@@ -74,7 +74,7 @@ export default function Navbar() {
       </div>
 
       {open && (
-        <nav id="mobile-menu" aria-label="Mobile" className="mx-auto flex max-w-[1320px] flex-col px-6 pb-3 sm:px-8 md:hidden">
+        <nav id="mobile-menu" aria-label="Mobile" className="mx-auto flex max-w-[1920px] flex-col px-6 pb-3 sm:px-8 lg:hidden">
           {nav.map((item) => (
             <Link
               key={item.label}

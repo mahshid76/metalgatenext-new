@@ -1,13 +1,14 @@
 import Image from "next/image";
 import ButtonLink from "./ButtonLink";
 import { site } from "../data/site";
+import { blur } from "../data/blur";
 
 const slides = [
-  { src: "/images/19.jpg", alt: "Welder cutting steel sections on site", position: "center 35%" },
-  { src: "/images/30.jpg", alt: "Ornate black wrought-iron gate with spear finials", position: "center" },
-  { src: "/images/13.jpg", alt: "Grey and black double driveway gate", position: "center" },
-  { src: "/images/26.jpg", alt: "Black metal driveway fence and gate", position: "center" },
-  { src: "/images/21.jpg", alt: "Welder working on a steel beam", position: "center" },
+  { id: 19, src: "/images/hero/19.jpg", alt: "Welder cutting steel sections on site", position: "center 35%" },
+  { id: 30, src: "/images/hero/30.jpg", alt: "Ornate black wrought-iron gate with spear finials", position: "center" },
+  { id: 13, src: "/images/hero/13.jpg", alt: "Grey and black double driveway gate", position: "center" },
+  { id: 26, src: "/images/hero/26.jpg", alt: "Black metal driveway fence and gate", position: "center" },
+  { id: 21, src: "/images/hero/21.jpg", alt: "Welder working on a steel beam", position: "center" },
 ];
 
 export default function Hero() {
@@ -25,6 +26,9 @@ export default function Hero() {
                 alt={slide.alt}
                 fill
                 priority={i === 0}
+                fetchPriority={i === 0 ? "high" : "low"}
+                placeholder="blur"
+                blurDataURL={blur[slide.id]}
                 sizes="(min-width: 1024px) 58vw, 100vw"
                 className="object-cover"
                 style={{ objectPosition: slide.position }}
@@ -38,19 +42,19 @@ export default function Hero() {
         </div>
 
         <div className="relative z-[5] flex min-w-0 flex-[1_1_440px] flex-col justify-center gap-6 px-7 py-16 sm:px-12 lg:px-[72px]">
-          <p className="hero-in text-xs font-extrabold uppercase tracking-[0.2em] text-gold" style={{ animationDelay: "2s" }}>
+          <p className="hero-in text-xs font-extrabold uppercase tracking-[0.2em] text-gold" style={{ animationDelay: "0.35s" }}>
             Metalwork · Leeds &amp; West Yorkshire
           </p>
           <h1
             className="hero-in font-display text-[clamp(2.75rem,5.6vw,5rem)] font-bold leading-none tracking-[-0.035em] text-[#f4f2eb]"
-            style={{ animationDelay: "2.15s" }}
+            style={{ animationDelay: "0.45s" }}
           >
             Looking for a metal gate?
           </h1>
-          <p className="hero-in max-w-[480px] text-[19px] leading-relaxed text-[#d4d9d6]" style={{ animationDelay: "2.3s" }}>
+          <p className="hero-in max-w-[480px] text-[19px] leading-relaxed text-[#d4d9d6]" style={{ animationDelay: "0.55s" }}>
             Made-to-measure gates, railings and metalwork, built for your home and made to last.
           </p>
-          <div className="hero-in mt-1.5 flex flex-wrap gap-3.5" style={{ animationDelay: "2.45s" }}>
+          <div className="hero-in mt-1.5 flex flex-wrap gap-3.5" style={{ animationDelay: "0.65s" }}>
             <ButtonLink href="/contact">Request a free quote</ButtonLink>
             <ButtonLink href={site.whatsappQuote} variant="ghost" target="_blank" rel="noopener noreferrer">
               Chat on WhatsApp

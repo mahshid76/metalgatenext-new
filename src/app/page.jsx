@@ -1,26 +1,25 @@
-// pages/index.js
-import Slider from  "../app/components/slider/Slider";
-import Gallery from "../app/gallery/Gallery";
+import AboutSection from "./components/AboutSection";
+import ContactSection from "./components/ContactSection";
+import Hero from "./components/Hero";
+import Marquee from "./components/Marquee";
+import ParallaxBand from "./components/ParallaxBand";
+import Process from "./components/Process";
+import Projects from "./components/Projects";
+import Services from "./components/Services";
+import Statement from "./components/Statement";
 
 export default function Home() {
   return (
-<div className="px-0">
-
-  {/* Slider Section */}
-  <section className="relative w-full h-screen">
-    <Slider />
-  </section>
-
-  {/* Optional separator */}
-  <div className="border-t border-gray-300 my-8"></div>
-
-  {/* Gallery Section */}
-  <section className="my-10 md:my-16">
-    <Gallery />
-  </section>
-
-</div>
-
-
+    <>
+      <Hero />
+      <Marquee />
+      <Statement />
+      <Services />
+      <ParallaxBand />
+      <Projects />
+      <Process />
+      <AboutSection id="about" />
+      <ContactSection id="contact" />
+    </>
   );
 }

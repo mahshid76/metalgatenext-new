@@ -1,70 +1,85 @@
+import Image from "next/image";
+import Link from "next/link";
+import { FaFacebookF, FaInstagram, FaWhatsapp } from "react-icons/fa";
+import { nav, site } from "../data/site";
 
-import { FaFacebookF, FaInstagram, FaWhatsapp } from 'react-icons/fa';
+const social = [
+  { label: "Facebook", href: site.facebook, Icon: FaFacebookF },
+  { label: "Instagram", href: site.instagram, Icon: FaInstagram },
+  { label: "WhatsApp", href: site.whatsapp, Icon: FaWhatsapp },
+];
+
 export default function Footer() {
   return (
-   <footer className="bg-gray-900 text-gray-300 py-10">
-      <div className="max-w-7xl mx-auto px-6 grid md:grid-cols-3 gap-8 text-center md:text-left">
-        
-        {/* About Us */}
+    <footer className="on-dark border-t border-line bg-deep">
+      <div className="mx-auto grid max-w-[1320px] gap-12 px-6 py-14 sm:px-8 md:grid-cols-[1.4fr_1fr_1fr]">
         <div>
-          <h3 className="text-white text-lg font-semibold mb-4">About Us</h3>
-          <p className="text-gray-400 text-sm leading-relaxed">
-            Metalgate Leeds Ltd provides expert metal fabrication across the UK,
-            specialising in custom metalwork, gates, railings, and structural
-            steel—with a focus on quality, precision, and reliable service.
+          <div className="mb-5 flex items-center gap-3">
+            <Image src="/assets/logo2.svg" alt="" width={40} height={40} />
+            <span className="text-lg font-extrabold tracking-[0.14em] text-ink">
+              METAL <span className="text-gold">GATE</span>{" "}
+              <span className="text-xs font-semibold tracking-[0.22em] text-dim">LEEDS</span>
+            </span>
+          </div>
+          <p className="max-w-md text-[15px] leading-relaxed text-dim">
+            Metalgate Leeds Ltd provides expert metal fabrication across Leeds and West Yorkshire,
+            specialising in custom metalwork, gates, railings and structural steel, with a focus on
+            quality, precision and reliable service.
           </p>
         </div>
 
-        {/* Contact */}
         <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Contact</h3>
-          <ul className="space-y-2 text-sm">
-            <li>📞 <a href="tel:+447710063815" className="hover:text-white">+44 7710063815</a></li>
-            <li>📧 <a href="mailto:metalgateleeds@gmail.com" className="hover:text-white">metalgateleeds@gmail.com</a></li>
-            <li>📍 The OLD School, Bireley Lane, Bradford, BD4 6AA</li>
+          <h2 className="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-kick">Contact</h2>
+          <ul className="space-y-2.5 text-[15px] text-body">
+            <li>
+              <a href={site.phoneHref} className="hover:text-ink">
+                {site.phone}
+              </a>
+            </li>
+            <li>
+              <a href={`mailto:${site.email}`} className="hover:text-ink">
+                {site.email}
+              </a>
+            </li>
+            <li>
+              {site.address[0]}, {site.address[1]}
+            </li>
+            <li>{site.hours}</li>
           </ul>
         </div>
 
-        {/* Follow Us */}
         <div>
-          <h3 className="text-white text-lg font-semibold mb-4">Follow Us</h3>
-          <div className="flex justify-center md:justify-start space-x-4">
-            {/* Facebook */}
-            <a
-              href="https://www.facebook.com/metalgateleeds"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition"
-            >
-              <FaFacebookF className="text-xl" />
-            </a>
-
-            {/* Instagram */}
-            <a
-              href="https://www.instagram.com/metal_gate_leeds"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition"
-            >
-              <FaInstagram className="text-xl" />
-            </a>
-
-            {/* WhatsApp */}
-            <a
-              href="https://wa.me/447710063815"
-              target="_blank"
-              rel="noopener noreferrer"
-              className="p-2 rounded-full bg-gray-800 hover:bg-gray-700 transition"
-            >
-              <FaWhatsapp className="text-xl" />
-            </a>
+          <h2 className="mb-4 text-xs font-extrabold uppercase tracking-[0.2em] text-kick">Explore</h2>
+          <ul className="space-y-2.5 text-[15px] text-body">
+            {nav.map((item) => (
+              <li key={item.label}>
+                <Link href={item.href} className="hover:text-ink">
+                  {item.label}
+                </Link>
+              </li>
+            ))}
+          </ul>
+          <div className="mt-6 flex gap-3">
+            {social.map(({ label, href, Icon }) => (
+              <a
+                key={label}
+                href={href}
+                target="_blank"
+                rel="noopener noreferrer"
+                aria-label={label}
+                className="flex h-11 w-11 items-center justify-center rounded-full border border-line3 text-ink transition hover:bg-gold hover:text-[#18211f]"
+              >
+                <Icon className="text-lg" aria-hidden="true" />
+              </a>
+            ))}
           </div>
         </div>
       </div>
 
-      {/* Bottom Bar */}
-      <div className="border-t border-gray-700 mt-10 pt-6 text-center text-sm text-gray-500">
-        © 2025 MetalGate Website. All rights reserved.
+      <div className="border-t border-line">
+        <p className="mx-auto max-w-[1320px] px-6 py-6 text-sm text-dim sm:px-8">
+          © {new Date().getFullYear()} Metalgate Leeds Ltd. All rights reserved.
+        </p>
       </div>
     </footer>
   );

@@ -1,0 +1,21 @@
+<!-- MetalGateLeeds - Concept 2 (monogram in hexagon) -->
+<svg xmlns="http://www.w3.org/2000/svg" width="200" height="200" viewBox="0 0 200 200">
+  <defs>
+    <linearGradient id="mgrad" x1="0" x2="1">
+      <stop offset="0" stop-color="#E6E6E6"></stop>
+      <stop offset="1" stop-color="#A0A0A0"></stop>
+    </linearGradient>
+  </defs>
+
+  <g transform="translate(100,100)">
+    <!-- hexagon -->
+    <polygon points="60,0 30,52 -30,52 -60,0 -30,-52 30,-52" fill="#0B0B0B"></polygon>
+    <polygon points="60,0 30,52 -30,52 -60,0 -30,-52 30,-52" fill="none" stroke="url(#mgrad)" stroke-width="6"></polygon>
+
+    <!-- MG monogram -->
+    <g transform="translate(-10,-8)" fill="url(#mgrad)" font-family="Montserrat, Poppins" font-weight="800">
+      <text x="-40" y="38" font-size="72">M</text>
+      <text x="10" y="38" font-size="62">G</text>
+    </g>
+  </g>
+</svg>
